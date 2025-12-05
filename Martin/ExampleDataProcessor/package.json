@@ -5,7 +5,8 @@
   "main": "process-wod-images.js",
   "scripts": {
     "start": "node process-wod-images.js",
-    "test": "node test-single-image.js"
+    "test": "node test-single-image.js",
+    "test:resize": "node test-resizing.js"
   },
   "keywords": [
     "wod",
@@ -19,7 +20,8 @@
   "license": "MIT",
   "dependencies": {
     "openai": "^4.28.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "jimp": "^0.22.10"
   },
   "engines": {
     "node": ">=18.0.0"

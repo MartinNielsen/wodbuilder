@@ -2,6 +2,8 @@ const { OpenAI } = require('openai');
 const fs = require('fs').promises;
 const path = require('path');
 const dotenv = require('dotenv');
+const { ImageProcessor } = require('./utils/image-processor');
+const { IMAGE_CONFIG } = require('./config/image-config');
 
 // Load environment variables
 dotenv.config();
@@ -10,9 +12,10 @@ dotenv.config();
 const CONFIG = {
   openRouterApiKey: process.env.OPENROUTER_API_KEY,
   model: 'google/gemini-2.0-flash-exp:free',
-  inputDir: path.join(__dirname, 'ExampleData'),
-  outputDir: path.join(__dirname, 'output'),
-  imageExtensions: ['.jpg', '.jpeg', '.png', '.gif']
+  inputDir: IMAGE_CONFIG.paths.inputDir,
+  outputDir: IMAGE_CONFIG.paths.outputDir,
+  imageExtensions: IMAGE_CONFIG.formats,
+  resizeEnabled: IMAGE_CONFIG.resize.enabled
 };
 
 /**
@@ -200,20 +203,50 @@ async function saveWodData(imagePath, wodData) {
 }
 
 /**
- * Process a single image file
+ * Process a single image file with optional resizing
  * @param {string} imagePath - Path to the image file
  * @returns {Promise<void>}
  */
 async function processSingleImage(imagePath) {
+  let imageToProcess = imagePath;
+  
   try {
+    console.log(`\n🖼️  Processing image: ${path.basename(imagePath)}`);
+    
+    // Resize image if enabled and needed
+    if (CONFIG.resizeEnabled) {
+      const imageProcessor = new ImageProcessor();
+      
+      console.log(`🔄 Resizing enabled, checking if ${path.basename(imagePath)} needs resizing...`);
+      
+      // Get the path to the processed image (resized or original)
+      imageToProcess = await imageProcessor.getProcessedImagePath(imagePath);
+      
+      // Log size reduction if applicable
+      if (imageToProcess !== imagePath) {
+        try {
+          const sizeInfo = await imageProcessor.calculateSizeReduction(imagePath, imageToProcess);
+          if (sizeInfo.reduction > 0) {
+            console.log(`📊 Size reduction: ${sizeInfo.reduction.toFixed(1)}% (${(sizeInfo.original/1024).toFixed(1)}KB → ${(sizeInfo.resized/1024).toFixed(1)}KB)`);
+          }
+        } catch (sizeError) {
+          console.log(`📊 Could not calculate size reduction: ${sizeError.message}`);
+        }
+      }
+    } else {
+      console.log(`⏭️  Resizing disabled, using original image`);
+    }
+    
     // Encode image to base64
-    const base64Image = await encodeImageToBase64(imagePath);
+    const base64Image = await encodeImageToBase64(imageToProcess);
     
     // Process with Gemini 2.5
     const wodData = await processImageWithGemini(imagePath, base64Image);
     
     // Save the result
     await saveWodData(imagePath, wodData);
+    
+    console.log(`✅ Completed processing: ${path.basename(imagePath)}`);
     
   } catch (error) {
     console.error(`❌ Processing failed for ${path.basename(imagePath)}:`, error.message);
@@ -234,6 +267,14 @@ async function main() {
     }
     console.log('✅ API key found');
 
+    // Show resizing configuration
+    if (CONFIG.resizeEnabled) {
+      console.log(`🖼️  Image resizing: ENABLED (max width: ${IMAGE_CONFIG.resize.maxWidth}px)`);
+      console.log(`📁 Resized images will be saved to: ${IMAGE_CONFIG.paths.resizedDir}`);
+    } else {
+      console.log(`🖼️  Image resizing: DISABLED`);
+    }
+
     // Discover images
     const imageFiles = await discoverImages(CONFIG.inputDir, CONFIG.imageExtensions);
     
@@ -253,6 +294,9 @@ async function main() {
 
     console.log(`\n🎉 Completed processing ${imageFiles.length} images!`);
     console.log(`📁 Output files saved to: ${CONFIG.outputDir}`);
+    if (CONFIG.resizeEnabled) {
+      console.log(`📁 Resized images saved to: ${IMAGE_CONFIG.paths.resizedDir}`);
+    }
 
   } catch (error) {
     console.error('\n💥 Fatal error:', error.message);
