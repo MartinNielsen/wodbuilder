@@ -42,7 +42,7 @@ require('dotenv').config();
 // Configuration
 const CONFIG = {
   openRouterApiKey: process.env.OPENROUTER_API_KEY,
-  model: 'google/gemini-2.0-flash-exp:free',
+  model: 'google/gemini-2.5-flash', // or 'google/gemini-2.0-flash-exp:free' for free alternative
   inputDir: path.join(__dirname, 'ExampleData'),
   outputDir: path.join(__dirname, 'output'),
   imageExtensions: ['.jpg', '.jpeg', '.png', '.gif']
@@ -204,6 +204,7 @@ async function testSingle() {
 - **Exercise Normalization**: Use exercises.json to normalize exercise names
 - **Vector Embeddings**: Generate embeddings for semantic search
 - **Qdrant Integration**: Store results in vector database
+- **Model Flexibility**: Support both paid and free model options with configuration
 
 ## 10. Security Considerations
 

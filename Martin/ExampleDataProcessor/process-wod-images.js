@@ -11,7 +11,7 @@ dotenv.config();
 // Configuration
 const CONFIG = {
   openRouterApiKey: process.env.OPENROUTER_API_KEY,
-  model: 'google/gemini-2.0-flash-exp:free',
+  model: 'google/gemini-2.5-flash',
   inputDir: IMAGE_CONFIG.paths.inputDir,
   outputDir: IMAGE_CONFIG.paths.outputDir,
   imageExtensions: IMAGE_CONFIG.formats,

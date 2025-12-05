@@ -53,7 +53,8 @@ This script:
     - Configures OpenRouter API with Gemini 2.5 model
     - Sends vision requests with resized images
     - Handles API responses and errors
-    - Uses `google/gemini-2.0-flash-exp:free` model
+    - Uses `google/gemini-2.5-flash` model
+    - **Note**: A free alternative model `google/gemini-2.0-flash-exp:free` is available for testing/development
 
 5. **WOD Data Extractor**
     - Processes Gemini responses
@@ -94,7 +95,7 @@ This script:
 ### Configuration
 
 - **API Key**: Loaded from `.env` file as `OPENROUTER_API_KEY`
-- **Model**: `google/gemini-2.0-flash-exp:free`
+- **Model**: `google/gemini-2.5-flash`
 - **Input Directory**: `Martin/ExampleDataProcessor/ExampleData/`
 - **Output Directory**: `Martin/ExampleDataProcessor/output/`
 - **Resized Directory**: `Martin/ExampleDataProcessor/output/resized/` (NEW)
@@ -145,6 +146,13 @@ The script instructs Gemini 2.5 to determine the optimal JSON schema based on th
    ```bash
    npm start
    ```
+
+### Model Selection
+
+**Production (Paid)**: Uses `google/gemini-2.5-flash` for best quality and reliability
+**Development/Testing (Free)**: Can use `google/gemini-2.0-flash-exp:free` to avoid charges
+
+To switch to the free model for testing, modify the model configuration in `process-wod-images.js` line 14.
 
 ### Configuration Options
 

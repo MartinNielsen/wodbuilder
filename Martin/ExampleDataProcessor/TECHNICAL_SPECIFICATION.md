@@ -27,7 +27,7 @@
 
 ### 1.3 External API Requirements
 - **OpenRouter API Key**: Required for accessing Gemini 2.5
-- **Model**: `google/gemini-2.0-flash-exp:free`
+- **Model**: `google/gemini-2.5-flash` (paid) or `google/gemini-2.0-flash-exp:free` (free alternative)
 - **Rate Limits**: Subject to OpenRouter API limits
 - **Network**: Internet connection required for API calls
 
@@ -73,7 +73,7 @@ const openai = new OpenAI({
 ### 3.2 Request Structure
 ```javascript
 const request = {
-  model: 'google/gemini-2.0-flash-exp:free',
+  model: 'google/gemini-2.5-flash', // or 'google/gemini-2.0-flash-exp:free' for free alternative
   messages: [
     {
       role: 'user',
@@ -242,6 +242,7 @@ try {
 - **Batch Processing**: Concurrent image processing
 - **Caching**: Skip already processed images
 - **Confidence Scoring**: Evaluate OCR quality
+- **Model Flexibility**: Support both paid and free model options with configuration
 
 ### 9.2 Long-term Features
 - **Exercise Normalization**: Use `exercises.json` for standardization
