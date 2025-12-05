@@ -1,0 +1,7 @@
+Martin/ExampleDataProcessor/ExampleData/exercises.json
+# Ignore all jpgs everywhere
+*.jpg
+*.jpeg
+
+# Ignore all node_modules directories
+**/node_modules/

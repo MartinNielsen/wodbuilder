@@ -1,0 +1,27 @@
+{
+  "name": "wod-image-processor",
+  "version": "1.0.0",
+  "description": "Process workout whiteboard images using OpenRouter Gemini 2.5",
+  "main": "process-wod-images.js",
+  "scripts": {
+    "start": "node process-wod-images.js",
+    "test": "node test-single-image.js"
+  },
+  "keywords": [
+    "wod",
+    "crossfit",
+    "ocr",
+    "gemini",
+    "openrouter",
+    "vision"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "openai": "^4.28.0",
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
